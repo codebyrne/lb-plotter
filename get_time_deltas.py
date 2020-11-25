@@ -1,9 +1,18 @@
 #! /usr/bin/python3
+'''
+This module will create a list of time deltas given a list of datetime strings
+that are provided in a file, one per line, assuming they are in ascending
+order.
+'''
 
 import os, sys
 from datetime import datetime
 
 def get_dtm_data(filename):
+    '''
+    Returns an array of dtm strings, given the filename
+    '''
+
     try:
         datestamp_array = []
         if os.path.isfile(filename):
@@ -17,6 +26,10 @@ def get_dtm_data(filename):
     return datestamp_array
 
 def calculate_deltas(dtm_array):
+    '''
+    Return the time deltas, given an array of datetime strings.
+    '''
+
     deltas_array = []
     previous_dtm = ""
 
@@ -26,7 +39,6 @@ def calculate_deltas(dtm_array):
                 d1 = datetime.strptime(dtm, "%Y-%m-%d %H:%M:%S.%f")
                 d2 = datetime.strptime(previous_dtm, "%Y-%m-%d %H:%M:%S.%f")
 
-                print(get_sec(str(d1 - d2)))
                 deltas_array.append(get_sec(str(d1 - d2)))
 
             previous_dtm = dtm
@@ -51,3 +63,5 @@ if __name__ == "__main__":
     
     datestamps = get_dtm_data(filename_param)
     deltas = calculate_deltas(datestamps)
+    for value in deltas:
+        print(value)

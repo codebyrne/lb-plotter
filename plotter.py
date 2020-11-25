@@ -5,8 +5,8 @@ from matplotlib import pyplot as plt
 from numpy import mean, pi
 from time import sleep
 
-def generateArray(filename):
-    # Get the data from a file
+def read_yarray_from_file(filename):
+    # Get the y series data from a file
     
     data_array = []
     
@@ -21,8 +21,7 @@ def generateArray(filename):
 
     return data_array
 
-
-def plotData(x_values, y_values, title = "Title", x_label = "", y_label = "", y_min = 0, y_max = 0):
+def plot_data(x_values, y_values, title = "Title", x_label = "", y_label = "", y_min = 0, y_max = 0):
 
     # Format matplotlib
     plt.rcParams['axes.facecolor'] = '000000'
@@ -53,19 +52,26 @@ def plotData(x_values, y_values, title = "Title", x_label = "", y_label = "", y_
     # plt.pause(0.00001)
     # plt.clf()
 
+def make_xarray(y_value_array):
+    '''
+    Return an array of sequential x values for each y value.
+    '''
+
+    return [i for i in range(0, len(y_value_array))]
+
 
 if __name__ == "__main__":
-    if len(os.sys.argv) == 7:
-        filename_param = os.sys.argv[1]
-        title_param = os.sys.argv[2]
-        x_label_param = os.sys.argv[3]
-        y_label_param = os.sys.argv[4]
-        y_min_param = float(os.sys.argv[5])
-        y_max_param = float(os.sys.argv[6])
-    else:
-        print("Usage: %s <filename> <title> <x-label> <y-label> <y-min> <y-max>" % os.sys.argv[0])
-        os.sys.exit(0)
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("filename", help="A file of float values in a column")
+    parser.add_argument("--title", help="The title for the plot")
+    parser.add_argument("--xlabel", help="The label for the x axis")
+    parser.add_argument("--ylabel", help="The label for the y axis")
+    parser.add_argument("--ymin", help="The y axis min value", type=float, default=0.0)
+    parser.add_argument("--ymax", help="The y axis max value", type=float, default=0.0)
 
-    y_array = generateArray(filename_param)
-    x_array = [i for i in range(0, len(y_array))]
-    plotData(x_array, y_array, title=title_param, x_label=x_label_param, y_label=y_label_param, y_min=y_min_param, y_max=y_max_param)
+    args = parser.parse_args()
+
+    y_array = read_yarray_from_file(args.filename)
+    x_array = make_xarray(y_array)
+    plot_data(x_array, y_array, title=args.title, x_label=args.xlabel, y_label=args.ylabel, y_min=args.ymin, y_max=args.ymax)
