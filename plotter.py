@@ -14,7 +14,11 @@ def read_yarray_from_file(filename):
         if os.path.isfile(filename):
             with open(filename, 'r') as f:
                 for line in f.readlines():
-                    data_array.append(float(line.strip()))                
+                    if ':' in line:
+                        h, m, s = line.split(':')
+                        data_array.append(float(h) * 3600 + float(m) * 60 + float(s))
+                    else:
+                        data_array.append(float(line.strip()))                
 
     except Exception as e:
         print("Error reading file: %s" % str(e))
